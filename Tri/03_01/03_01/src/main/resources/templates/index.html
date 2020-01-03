@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+	integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+	crossorigin="anonymous">
+</head>
+<body>
+	<div class="container">
+		<table class="table table-hover bg-light" border="2">
+			<thead>
+				<tr>
+					<th>Mã Sinh Viên</th>
+					<th>Họ</th>
+					<th>Tên</th>
+					<th>Địa Chỉ</th>
+					<th>Ngày Sinh</th>
+					<th>Nơi Sinh</th>
+					<th>Mã Khoa</th>
+				</tr>
+			</thead>
+			<tbody id="show">
+			</tbody>
+		</table>
+		<div class="row">
+		<div class="col-4">
+			<div class="form-inline">
+			<input type="email" class="form-control my-2" id="ten"
+			placeholder="Nhập Họ Hoặc Tên">
+			<button id="get" class="btn btn-outline-danger ml-2">OK</button>
+			</div>
+			</div>
+	</div>
+</body>
+<script>
+        var request = new XMLHttpRequest()
+        let load = ''
+        request.open('GET', 'http://localhost:8080/api/lietke', true)
+        	 request.open 
+            $("#get").click(function () {
+                var tenLop = $("#ten").val();              
+                $.ajax({ url: 'http://localhost:8080/api/getname?ten=' + $("#ten").val() }, true)
+                .then(function (data) {
+                    for (let i = 0; i < data.length; i++) {                 
+                        load += `<tr>
+                        	 <th>${data[i].maSv}</th> 
+                            <th>${data[i].hoSv}</th>
+                            <th>${data[i].tenSv}</th>
+                            <th>${data[i].diaChi}</th>
+                            <th>${data[i].ngaySinh}</th>
+                            <th>${data[i].noiSinh}</th>
+                            <th>${data[i].maKhoa}</th>
+                         </tr>`;                       
+                    }                
+                        console.log(data)
+                        document.getElementById("show").innerHTML = load;
+                });
+            });
+            request.onload = function () {
+            // Begin accessing JSON data here
+            var data = JSON.parse(this.response)
+            let load = ''
+            if (request.status >= 200 && request.status < 400) {
+                data.forEach(check => {
+                	 load += `<tr>
+                         <th>${check.maSv}</th> 
+                         <th>${check.hoSv}</th>
+                         <th>${check.tenSv}</th>
+                         <th>${check.diaChi}</th>
+                         <th>${check.ngaySinh}</th>
+                         <th>${check.noiSinh}</th>
+                         <th>${check.maKhoa}</th>
+                      </tr>`;
+                })
+            } else {
+                console.log('error')
+            }
+            document.getElementById("show").innerHTML=load;
+        }
+        request.send()
+    </script>
+</html>
